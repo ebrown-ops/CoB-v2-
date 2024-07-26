@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
-import { useComparison } from '@/context/ComparisonContext';
+import { useComparison } from '../context/ComparisonContext';
 import { motion } from "framer-motion";
+import CreditCardCalculator from './CreditCardCalculator';
+import LoanCalculator from './LoanCalculator';
 
 console.log('ProductList component is being loaded');
 
@@ -29,8 +31,8 @@ const ProductList = ({ products, category }) => {
     const sortedProducts = [...filteredProducts].sort((a, b) => {
       if (sortBy === 'name') {
         return a.name.localeCompare(b.name);
-      } else if (sortBy === 'price' && 'price' in a) {
-        return parseFloat(a.price) - parseFloat(b.price);
+      } else if (sortBy === 'ranking') {
+        return a.ranking - b.ranking;
       }
       return 0;
     });
@@ -61,7 +63,7 @@ const ProductList = ({ products, category }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="name">Name</SelectItem>
-            {category !== 'loans' && <SelectItem value="price">Price</SelectItem>}
+            <SelectItem value="ranking">Ranking</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -79,14 +81,26 @@ const ProductList = ({ products, category }) => {
                 <CardDescription>{product.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                {Object.entries(product).slice(0, 3).map(([key, value]) => {
-                  if (key !== 'id' && key !== 'name' && key !== 'description') {
+                <p><strong>Ranking:</strong> {product.ranking}</p>
+                {Object.entries(product).map(([key, value]) => {
+                  if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
                     return (
                       <p key={key}><strong>{key}:</strong> {value}</p>
                     );
                   }
                   return null;
                 })}
+                <div className="mt-4">
+                  <h4 className="font-semibold">Reviews:</h4>
+                  {product.reviews.map((review) => (
+                    <div key={review.id} className="mt-2">
+                      <p>Rating: {review.rating}/5</p>
+                      <p>"{review.comment}"</p>
+                    </div>
+                  ))}
+                </div>
+                {category === 'credit-cards' && <CreditCardCalculator />}
+                {category === 'loans' && <LoanCalculator />}
                 <div className="mt-4 flex justify-between">
                   <Button 
                     onClick={() => toggleProductSelection(product)}

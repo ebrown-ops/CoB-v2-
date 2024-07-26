@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Share2 } from 'lucide-react';
 
 console.log('FloatingComparisonBar is being loaded');
 
@@ -10,6 +11,15 @@ export default function FloatingComparisonBar({ selectedItems, onCompare, onClea
   useEffect(() => {
     setIsVisible(selectedItems.length > 0);
   }, [selectedItems]);
+
+  const handleShare = () => {
+    const comparisonUrl = `${window.location.origin}/compare?items=${selectedItems.map(item => item.id).join(',')}`;
+    navigator.clipboard.writeText(comparisonUrl).then(() => {
+      alert('Comparison link copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy comparison link: ', err);
+    });
+  };
 
   return (
     <AnimatePresence>
@@ -26,6 +36,10 @@ export default function FloatingComparisonBar({ selectedItems, onCompare, onClea
             </div>
             <div>
               <Button onClick={onCompare} className="mr-2" disabled={selectedItems.length < 2}>Compare</Button>
+              <Button onClick={handleShare} className="mr-2" disabled={selectedItems.length < 2}>
+                <Share2 className="mr-2 h-4 w-4" />
+                Share
+              </Button>
               <Button onClick={onClear} variant="secondary">Clear All</Button>
             </div>
           </div>

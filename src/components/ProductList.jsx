@@ -5,53 +5,86 @@ import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import Link from 'next/link';
 import { useComparison } from '../context/ComparisonContext';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import CreditCardCalculator from './CreditCardCalculator';
 import LoanCalculator from './LoanCalculator';
+import HRSolutionsCalculator from './HRSolutionsCalculator';
 
 console.log('ProductList component is being loaded');
 
-const ProductCard = ({ product, category, onToggleSelection, isSelected }) => (
-  <Card className="hover:shadow-lg transition-shadow duration-300">
-    <CardHeader>
-      <CardTitle>{product.name}</CardTitle>
-      <CardDescription>{product.description}</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p><strong>Ranking:</strong> {product.ranking}</p>
-      {Object.entries(product).map(([key, value]) => {
-        if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
-          return (
-            <p key={key}><strong>{key}:</strong> {value}</p>
-          );
-        }
-        return null;
-      })}
-      <div className="mt-4">
-        <h4 className="font-semibold">Reviews:</h4>
-        {product.reviews.map((review) => (
-          <div key={review.id} className="mt-2 p-2 bg-gray-100 rounded">
-            <p>Rating: {review.rating}/5</p>
-            <p className="italic">"{review.comment}"</p>
-          </div>
-        ))}
-      </div>
-      {category === 'credit-cards' && <CreditCardCalculator />}
-      {category === 'loans' && <LoanCalculator />}
-      <div className="mt-4 flex justify-between">
-        <Button 
-          onClick={() => onToggleSelection(product)}
-          variant={isSelected ? "secondary" : "default"}
-        >
-          {isSelected ? "Remove" : "Compare"}
-        </Button>
-        <Link href={`/${category}/${product.id}`}>
-          <Button variant="outline">View Details</Button>
-        </Link>
-      </div>
-    </CardContent>
-  </Card>
-);
+const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <motion.div className="relative" style={{ perspective: '1000px' }}>
+      <AnimatePresence>
+        {!isFlipped ? (
+          <motion.div
+            key="front"
+            initial={{ rotateY: 0 }}
+            exit={{ rotateY: 90 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle>{product.name}</CardTitle>
+                <CardDescription>{product.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p><strong>Ranking:</strong> {product.ranking}</p>
+                <Button onClick={() => setIsFlipped(true)} className="mt-4">See More Details</Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="back"
+            initial={{ rotateY: -90 }}
+            animate={{ rotateY: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow duration-300">
+              <CardContent>
+                {Object.entries(product).map(([key, value]) => {
+                  if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
+                    return (
+                      <p key={key}><strong>{key}:</strong> {value}</p>
+                    );
+                  }
+                  return null;
+                })}
+                <div className="mt-4">
+                  <h4 className="font-semibold">Reviews:</h4>
+                  {product.reviews.map((review) => (
+                    <div key={review.id} className="mt-2 p-2 bg-gray-100 rounded">
+                      <p>Rating: {review.rating}/5</p>
+                      <p className="italic">"{review.comment}"</p>
+                    </div>
+                  ))}
+                </div>
+                {category === 'credit-cards' && <CreditCardCalculator />}
+                {category === 'loans' && <LoanCalculator />}
+                {category === 'hr-solutions' && <HRSolutionsCalculator />}
+                <div className="mt-4 flex justify-between">
+                  <Button 
+                    onClick={() => onToggleSelection(product)}
+                    variant={isSelected ? "secondary" : "default"}
+                  >
+                    {isSelected ? "Remove" : "Compare"}
+                  </Button>
+                  <Link href={`/${category}/${product.id}`}>
+                    <Button variant="outline">View Details</Button>
+                  </Link>
+                </div>
+                <Button onClick={() => setIsFlipped(false)} className="mt-4 w-full">Back</Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 const ProductList = ({ products, category }) => {
   console.log('ProductList component is rendering', { products, category });

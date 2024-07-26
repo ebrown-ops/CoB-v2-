@@ -4,6 +4,16 @@ import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+
+const data = [
+  { name: 'Software', value: 400 },
+  { name: 'Loans', value: 300 },
+  { name: 'Credit Cards', value: 200 },
+  { name: 'HR Solutions', value: 100 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -20,7 +30,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
@@ -48,14 +58,29 @@ export default function Dashboard() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Recommended for You</CardTitle>
+              <CardTitle>Product Interest</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-5">
-                <li>ERP Software for growing businesses</li>
-                <li>Business Credit Cards with cashback rewards</li>
-                <li>HR Solutions for remote teams</li>
-              </ul>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
           <Card>

@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);
@@ -18,7 +19,6 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
   };
 
   const handleSaveComparison = () => {
-    // Here you would typically save the comparison to the user's account
     console.log('Saving comparison:', products);
     toast({
       title: "Comparison Saved",
@@ -31,6 +31,14 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
   }
 
   const features = products.length > 0 ? Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name') : [];
+
+  const chartData = features.map(feature => {
+    const data = { name: feature };
+    products.forEach(product => {
+      data[product.name] = typeof product[feature] === 'number' ? product[feature] : 0;
+    });
+    return data;
+  });
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -45,7 +53,7 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Table>
+            <Table className="mb-8">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-1/4">Feature</TableHead>
@@ -69,6 +77,20 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
                 ))}
               </TableBody>
             </Table>
+            <div className="mb-8 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  {products.map((product, index) => (
+                    <Bar key={product.id} dataKey={product.name} fill={`hsl(${index * 60}, 70%, 50%)`} />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
             <div className="mt-4 flex justify-end">
               <Button onClick={handleSaveComparison}>Save Comparison</Button>
             </div>

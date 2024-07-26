@@ -9,14 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Footer from './Footer';
+import { useTheme } from "next-themes";
+import { Sun, Moon } from "lucide-react";
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const { theme, setTheme } = useTheme();
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-sm">
+      <header className="bg-white dark:bg-gray-800 shadow-sm">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
@@ -56,15 +59,24 @@ export default function Layout({ children }) {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Link href="/credit-cards" className="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                <Link href="/credit-cards" className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
                   Credit Cards
                 </Link>
-                <Link href="/hr-solutions" className="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                <Link href="/hr-solutions" className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
                   HR Solutions
                 </Link>
               </div>
             </div>
             <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle Theme"
+                className="mr-6"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+              </Button>
               {session ? (
                 <>
                   <Link href="/dashboard">

@@ -1,18 +1,19 @@
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import ProductDetails from '@/components/ProductDetails';
 
-const hrSolutionProducts = [
-  { id: 1, name: 'HR Management Suite', category: 'HR Solutions', description: 'Comprehensive HR platform for SMBs', price: '$49/month per employee', features: ['Payroll processing', 'Time tracking', 'Benefits administration', 'Performance management'], rating: 4.5 },
-  { id: 2, name: 'Recruitment Tool', category: 'HR Solutions', description: 'Streamline your hiring process', price: '$99/month', features: ['Job posting', 'Applicant tracking', 'Interview scheduling', 'Onboarding management'], rating: 4.2 },
-  { id: 3, name: 'Employee Engagement Platform', category: 'HR Solutions', description: 'Boost employee satisfaction and retention', price: '$29/month per employee', features: ['Pulse surveys', 'Recognition programs', 'Goal tracking', 'Feedback tools'], rating: 4.7 },
+const hrSolutions = [
+  { id: 1, name: 'HR Management Suite', description: 'Comprehensive HR platform for SMBs', price: '$10/employee/month', features: 'Payroll, Time Tracking, Benefits Administration', employeeSelfService: 'Yes', mobileApp: 'Yes', integrations: '50+' },
+  { id: 2, name: 'Recruitment Tool', description: 'Streamline your hiring process', price: '$200/month', features: 'Job Posting, Applicant Tracking, Interview Scheduling', employeeSelfService: 'No', mobileApp: 'Yes', integrations: '20+' },
+  { id: 3, name: 'Employee Engagement Platform', description: 'Boost employee satisfaction and retention', price: '$5/employee/month', features: 'Surveys, Recognition Programs, Performance Management', employeeSelfService: 'Yes', mobileApp: 'Yes', integrations: '30+' },
+  { id: 4, name: 'Learning Management System', description: 'Facilitate employee training and development', price: '$8/employee/month', features: 'Course Creation, Skills Tracking, Certifications', employeeSelfService: 'Yes', mobileApp: 'Yes', integrations: '15+' },
+  { id: 5, name: 'Workforce Analytics', description: 'Data-driven HR decision making', price: '$15/employee/month', features: 'Dashboards, Predictive Analytics, Custom Reports', employeeSelfService: 'No', mobileApp: 'No', integrations: '40+' },
 ];
 
-export default function HRSolutionDetailPage() {
+export default function HRSolutionDetails() {
   const router = useRouter();
   const { id } = router.query;
-  const solution = hrSolutionProducts.find(p => p.id === parseInt(id));
+  const solution = hrSolutions.find(s => s.id === parseInt(id));
 
   if (!solution) {
     return <Layout><div>HR solution not found</div></Layout>;
@@ -21,32 +22,7 @@ export default function HRSolutionDetailPage() {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl">{solution.name}</CardTitle>
-            <CardDescription>{solution.category}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg mb-4">{solution.description}</p>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <h3 className="font-semibold">Price</h3>
-                <p>{solution.price}</p>
-              </div>
-              <div>
-                <h3 className="font-semibold">Rating</h3>
-                <p>{solution.rating} / 5</p>
-              </div>
-            </div>
-            <h3 className="font-semibold mb-2">Key Features</h3>
-            <ul className="list-disc pl-5 mb-6">
-              {solution.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
-            <Button className="w-full">Request Demo</Button>
-          </CardContent>
-        </Card>
+        <ProductDetails product={solution} />
       </div>
     </Layout>
   );

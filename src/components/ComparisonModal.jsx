@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Loader2 } from "lucide-react";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);

@@ -7,7 +7,11 @@ import Link from 'next/link';
 import { useComparison } from '@/context/ComparisonContext';
 import { motion } from "framer-motion";
 
-export default function ProductList({ products, category }) {
+console.log('ProductList component is being loaded');
+
+const ProductList = ({ products, category }) => {
+  console.log('ProductList component is rendering', { products, category });
+
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
@@ -101,4 +105,6 @@ export default function ProductList({ products, category }) {
       </div>
     </div>
   );
-}
+};
+
+export default ProductList;

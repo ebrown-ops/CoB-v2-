@@ -5,6 +5,8 @@ import FloatingComparisonBar from '@/components/FloatingComparisonBar';
 import { useComparison } from '@/context/ComparisonContext';
 import { useState } from 'react';
 
+console.log('Credit Cards page is being loaded');
+
 const creditCards = [
   { id: 1, name: 'Business Rewards Card', description: '2% cashback on all purchases', annualFee: '$0', apr: '14.99% - 22.99%', rewardsRate: '2%', foreignTransactionFee: '3%', creditScoreRequired: '700+' },
   { id: 2, name: 'Travel Points Card', description: '3x points on travel and dining', annualFee: '$95', apr: '16.99% - 23.99%', rewardsRate: '3x points', foreignTransactionFee: '0%', creditScoreRequired: '720+' },
@@ -14,6 +16,7 @@ const creditCards = [
 ];
 
 export default function CreditCardsPage() {
+  console.log('CreditCardsPage component is rendering');
   const { selectedItems, clearItems } = useComparison();
   const [isComparing, setIsComparing] = useState(false);
 

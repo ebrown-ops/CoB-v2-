@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/toaster";
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from "next-themes";
+import { ComparisonProvider } from '@/context/ComparisonContext';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -47,10 +48,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
       <ThemeProvider attribute="class">
-        <ErrorBoundary>
-          <Component {...pageProps} />
-          <Toaster />
-        </ErrorBoundary>
+        <ComparisonProvider>
+          <ErrorBoundary>
+            <Component {...pageProps} />
+            <Toaster />
+          </ErrorBoundary>
+        </ComparisonProvider>
       </ThemeProvider>
     </SessionProvider>
   );

@@ -11,6 +11,7 @@ import {
 import Footer from './Footer';
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
+import Notifications from './Notifications';
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -72,11 +73,12 @@ export default function Layout({ children }) {
                 variant="ghost"
                 size="icon"
                 aria-label="Toggle Theme"
-                className="mr-6"
+                className="mr-2"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
-                {theme === "dark" ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
+              <Notifications />
               {session ? (
                 <>
                   <Link href="/dashboard">

@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Loader2 } from "lucide-react";
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -18,12 +20,26 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
     onClose();
   };
 
-  const handleSaveComparison = () => {
-    console.log('Saving comparison:', products);
-    toast({
-      title: "Comparison Saved",
-      description: "Your comparison has been saved successfully.",
-    });
+  const handleSaveComparison = async () => {
+    setLoading(true);
+    try {
+      // Simulating an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Saving comparison:', products);
+      toast({
+        title: "Comparison Saved",
+        description: "Your comparison has been saved successfully.",
+      });
+    } catch (error) {
+      console.error('Error saving comparison:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save comparison. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!products || products.length === 0) {
@@ -77,7 +93,7 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
                 ))}
               </TableBody>
             </Table>
-            <div className="mb-8 h-64">
+            <div className="mb-8 h-64 md:h-96">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -92,7 +108,10 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
               </ResponsiveContainer>
             </div>
             <div className="mt-4 flex justify-end">
-              <Button onClick={handleSaveComparison}>Save Comparison</Button>
+              <Button onClick={handleSaveComparison} disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Comparison
+              </Button>
             </div>
           </motion.div>
         ) : (

@@ -5,12 +5,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
+import { toast } from "@/components/ui/use-toast";
 
 export default function Profile() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [name, setName] = useState(session?.user?.name || '');
   const [email, setEmail] = useState(session?.user?.email || '');
+  const [company, setCompany] = useState('Acme Inc.');
+  const [role, setRole] = useState('Manager');
 
   if (status === 'loading') {
     return <Layout><p>Loading...</p></Layout>;
@@ -24,8 +27,11 @@ export default function Profile() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically update the user's profile
-    console.log('Updating profile:', { name, email });
-    // Show a success message or redirect
+    console.log('Updating profile:', { name, email, company, role });
+    toast({
+      title: "Profile Updated",
+      description: "Your profile has been successfully updated.",
+    });
   };
 
   return (
@@ -55,6 +61,26 @@ export default function Profile() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="company" className="block text-sm font-medium text-gray-700">Company</label>
+                <Input
+                  id="company"
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                <Input
+                  id="role"
+                  type="text"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                   required
                 />
               </div>

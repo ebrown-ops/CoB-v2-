@@ -46,9 +46,12 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
     return null;
   }
 
-  const features = products.length > 0 ? Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category') : [];
+  const commonFeatures = ['price', 'rating'];
+  const features = [...new Set(products.flatMap(product => 
+    Object.keys(product).filter(key => !['id', 'name', 'category'].includes(key))
+  ))];
 
-  const chartData = features.map(feature => {
+  const chartData = commonFeatures.map(feature => {
     const data = { name: feature };
     products.forEach(product => {
       data[product.name] = typeof product[feature] === 'number' ? product[feature] : 0;
@@ -86,7 +89,7 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
                       <TableCell key={product.id} className="text-center">
                         {typeof product[feature] === 'boolean' 
                           ? (product[feature] ? '✅' : '❌')
-                          : product[feature]}
+                          : product[feature] || 'N/A'}
                       </TableCell>
                     ))}
                   </TableRow>

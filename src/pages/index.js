@@ -8,6 +8,7 @@ import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
 import NewsletterSubscription from '@/components/NewsletterSubscription';
 import { Combobox } from "@/components/ui/combobox";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
@@ -25,10 +26,24 @@ const searchSuggestions = [
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [recentlyViewed, addRecentlyViewed] = useRecentlyViewed('recentlyViewedProducts', 3);
 
   const handleSearch = (value) => {
+    setIsLoading(true);
+    // Simulating API call
+    setTimeout(() => {
+      const results = searchSuggestions.filter(item => 
+        item.label.toLowerCase().includes(value.toLowerCase())
+      );
+      setSearchResults(results);
+      setIsLoading(false);
+    }, 300);
+  };
+
+  const handleSelectSearch = (value) => {
     router.push(`/search?q=${encodeURIComponent(value)}`);
   };
 
@@ -52,10 +67,17 @@ export default function Home() {
 
           <div className="w-full max-w-md mb-8">
             <Combobox
-              items={searchSuggestions}
+              items={searchResults}
               placeholder="Search for software, loans, credit cards, or HR solutions"
-              onSelect={handleSearch}
+              onInputChange={handleSearch}
+              onSelect={handleSelectSearch}
             />
+            {isLoading && (
+              <div className="mt-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full mt-2" />
+              </div>
+            )}
           </div>
 
           <FeaturedCategories />

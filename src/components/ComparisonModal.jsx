@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);
@@ -13,6 +15,15 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
   const handleClose = () => {
     setOpen(false);
     onClose();
+  };
+
+  const handleSaveComparison = () => {
+    // Here you would typically save the comparison to the user's account
+    console.log('Saving comparison:', products);
+    toast({
+      title: "Comparison Saved",
+      description: "Your comparison has been saved successfully.",
+    });
   };
 
   if (!products || products.length === 0) {
@@ -58,6 +69,9 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
                 ))}
               </TableBody>
             </Table>
+            <div className="mt-4 flex justify-end">
+              <Button onClick={handleSaveComparison}>Save Comparison</Button>
+            </div>
           </motion.div>
         ) : (
           <p>No products selected for comparison.</p>

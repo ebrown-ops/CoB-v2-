@@ -7,6 +7,7 @@ import Layout from '@/components/Layout';
 import FeaturedCategories from '@/components/FeaturedCategories';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
+import NewsletterSubscription from '@/components/NewsletterSubscription';
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
@@ -149,6 +150,15 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
+          </motion.section>
+
+          <motion.section
+            className="mt-12 w-full max-w-4xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
+            <NewsletterSubscription />
           </motion.section>
         </main>
       </div>

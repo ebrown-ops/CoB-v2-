@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const data = [
   { name: 'Software', value: 400 },
@@ -14,6 +15,16 @@ const data = [
 ];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+const activityData = [
+  { name: 'Mon', visits: 20 },
+  { name: 'Tue', visits: 35 },
+  { name: 'Wed', visits: 25 },
+  { name: 'Thu', visits: 40 },
+  { name: 'Fri', visits: 30 },
+  { name: 'Sat', visits: 15 },
+  { name: 'Sun', visits: 10 },
+];
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -49,11 +60,17 @@ export default function Dashboard() {
               <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-5">
-                <li>Compared 3 CRM software solutions</li>
-                <li>Viewed Business Loan options</li>
-                <li>Updated profile information</li>
-              </ul>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={activityData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="visits" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
           <Card>

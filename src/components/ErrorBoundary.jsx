@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
           {process.env.NODE_ENV === 'development' && (
             <details className="text-left">
               <summary>Error details</summary>
-              <pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto">
+              <pre className="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded overflow-auto">
                 {this.state.error && this.state.error.toString()}
                 <br />
                 {this.state.errorInfo && this.state.errorInfo.componentStack}

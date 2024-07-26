@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   }, [router.events]);
 
   return (
-    <>
+    <ErrorBoundary>
       <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=YOUR-ANALYTICS-ID`}
@@ -65,17 +65,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         }}
       />
       <SessionProvider session={session}>
-        <ThemeProvider attribute="class">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ComparisonProvider>
-            <ErrorBoundary>
-              <Component {...pageProps} />
-              <Toaster />
-              <OnboardingTutorial />
-            </ErrorBoundary>
+            <Component {...pageProps} />
+            <Toaster />
+            <OnboardingTutorial />
           </ComparisonProvider>
         </ThemeProvider>
       </SessionProvider>
-    </>
+    </ErrorBoundary>
   );
 }
 

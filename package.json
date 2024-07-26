@@ -66,6 +66,7 @@
     "react-resizable-panels": "^2.0.19",
     "react-tooltip": "^5.27.1",
     "recharts": "^2.12.7",
+    "sitemap": "^8.0.0",
     "sonner": "^1.5.0",
     "stripe": "^16.2.0",
     "tailwind-merge": "^2.3.0",

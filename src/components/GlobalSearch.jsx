@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput, CommandList, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Search, Loader2 } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 const allProducts = [
   { id: 'sw1', name: 'CRM Pro', category: 'Software' },
@@ -29,6 +30,7 @@ export default function GlobalSearch() {
   const [recentSearches, setRecentSearches] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const storedSearches = localStorage.getItem('recentSearches');
@@ -37,25 +39,28 @@ export default function GlobalSearch() {
     }
   }, []);
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm) {
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      if (term) {
         setIsLoading(true);
         const results = allProducts.filter(product =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchTerm.toLowerCase())
+          product.name.toLowerCase().includes(term.toLowerCase()) ||
+          product.category.toLowerCase().includes(term.toLowerCase())
         );
         setSearchResults(results);
         setIsLoading(false);
         // Log analytics for search attempt
-        console.log('Search attempt:', { term: searchTerm, resultsCount: results.length });
+        console.log('Search attempt:', { term, resultsCount: results.length });
       } else {
         setSearchResults([]);
       }
-    }, 300);
+    }, 300),
+    []
+  );
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
 
   const handleResultClick = (result) => {
     let url;
@@ -90,6 +95,12 @@ export default function GlobalSearch() {
       addToRecentSearches(searchTerm);
       // Log search analytics
       console.log('Search submitted:', { term: searchTerm });
+    } else {
+      toast({
+        title: "Search Error",
+        description: "Please enter a search term.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -124,6 +135,7 @@ export default function GlobalSearch() {
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
               className="pl-8 pr-4 w-full"
+              aria-label="Search products"
             />
           </div>
         </PopoverTrigger>
@@ -175,4 +187,16 @@ export default function GlobalSearch() {
       </Button>
     </form>
   );
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }

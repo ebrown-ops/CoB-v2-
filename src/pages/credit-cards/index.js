@@ -4,6 +4,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import FloatingComparisonBar from '../../components/FloatingComparisonBar';
 import { useComparison } from '../../context/ComparisonContext';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 console.log('Credit Cards page is being loaded');
 
@@ -101,21 +102,31 @@ export default function CreditCardsPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      >
         <h1 className="text-3xl font-bold mb-8">Business Credit Cards</h1>
         <ProductList products={creditCards} category="credit-cards" />
         {isComparing && selectedItems.length > 0 && (
-          <div className="mt-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mt-8"
+          >
             <h2 className="text-2xl font-bold mb-4">Comparison</h2>
             <ComparisonTable products={selectedItems} />
-          </div>
+          </motion.div>
         )}
         <FloatingComparisonBar
           selectedItems={selectedItems}
           onCompare={handleCompare}
           onClear={handleClearAll}
         />
-      </div>
+      </motion.div>
     </Layout>
   );
 }

@@ -2,17 +2,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import Footer from './Footer';
 import { useTheme } from "next-themes";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import Notifications from './Notifications';
 import GlobalSearch from './GlobalSearch';
+import ProductNavigation from './ProductNavigation';
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,44 +24,7 @@ export default function Layout({ children }) {
                 SMB Solutions
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost">Software</Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      <Link href="/software/crm">CRM</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/software/erp">ERP</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/software/accounting">Accounting</Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost">Loans</Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      <Link href="/loans/business">Business Loans</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/loans/equipment">Equipment Financing</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/loans/line-of-credit">Line of Credit</Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <Link href="/credit-cards" className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
-                  Credit Cards
-                </Link>
-                <Link href="/hr-solutions" className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
-                  HR Solutions
-                </Link>
+                <ProductNavigation />
               </div>
             </div>
             <div className="flex items-center">
@@ -107,10 +65,7 @@ export default function Layout({ children }) {
           {isMenuOpen && (
             <div className="sm:hidden">
               <div className="pt-2 pb-3 space-y-1">
-                <Link href="/software" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Software</Link>
-                <Link href="/loans" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Loans</Link>
-                <Link href="/credit-cards" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Credit Cards</Link>
-                <Link href="/hr-solutions" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">HR Solutions</Link>
+                <ProductNavigation />
               </div>
             </div>
           )}

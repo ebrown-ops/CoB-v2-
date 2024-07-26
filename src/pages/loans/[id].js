@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import LoanCalculator from '@/components/LoanCalculator';
 
 const loanProducts = [
   { id: 1, name: 'Small Business Loan', category: 'Loans', description: 'Flexible financing for small businesses', amount: '$10,000 - $250,000', term: '1-5 years', interestRate: '5.99% - 24.99%', features: ['Fast approval', 'No collateral required', 'Flexible repayment terms'], rating: 4.5 },
@@ -52,7 +53,8 @@ export default function LoanDetailPage() {
                 <li key={index}>{feature}</li>
               ))}
             </ul>
-            <Button className="w-full">Apply Now</Button>
+            <LoanCalculator />
+            <Button className="w-full mt-4">Apply Now</Button>
           </CardContent>
         </Card>
       </div>

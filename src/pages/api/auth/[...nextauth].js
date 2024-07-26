@@ -33,5 +33,7 @@ export default NextAuth({
       session.user.id = token.id;
       return session;
     }
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key-here', // Add this line
+  debug: process.env.NODE_ENV === 'development', // Add this line for better debugging
 });

@@ -7,9 +7,9 @@ import ComparisonModal from '@/components/ComparisonModal';
 import { toast } from "@/components/ui/use-toast";
 
 const softwareProducts = [
-  { id: 1, name: 'CRM Pro', category: 'CRM', description: 'Advanced CRM for small businesses', price: '$49/month', users: 'Up to 10', features: 'Contact Management, Sales Tracking' },
-  { id: 2, name: 'ERP Suite', category: 'ERP', description: 'Comprehensive ERP solution', price: '$99/month', users: 'Unlimited', features: 'Inventory, Finance, HR' },
-  { id: 3, name: 'AccountMaster', category: 'Accounting', description: 'Easy-to-use accounting software', price: '$29/month', users: 'Up to 5', features: 'Invoicing, Expense Tracking, Reports' },
+  { id: 1, name: 'CRM Pro', category: 'CRM', description: 'Advanced CRM for small businesses', price: 49, users: 'Up to 10', features: 'Contact Management, Sales Tracking', rating: 4.5 },
+  { id: 2, name: 'ERP Suite', category: 'ERP', description: 'Comprehensive ERP solution', price: 99, users: 'Unlimited', features: 'Inventory, Finance, HR', rating: 4.2 },
+  { id: 3, name: 'AccountMaster', category: 'Accounting', description: 'Easy-to-use accounting software', price: 29, users: 'Up to 5', features: 'Invoicing, Expense Tracking, Reports', rating: 4.7 },
 ];
 
 export default function SoftwarePage() {
@@ -49,7 +49,7 @@ export default function SoftwarePage() {
               </CardHeader>
               <CardContent>
                 <p>{product.description}</p>
-                <p className="mt-2"><strong>Price:</strong> {product.price}</p>
+                <p className="mt-2"><strong>Price:</strong> ${product.price}/month</p>
                 <p><strong>Users:</strong> {product.users}</p>
                 <p><strong>Key Features:</strong> {product.features}</p>
                 <div className="mt-4 flex justify-between items-center">

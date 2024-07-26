@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +12,7 @@ import Footer from './Footer';
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -63,9 +65,16 @@ export default function Layout({ children }) {
               </div>
             </div>
             <div className="flex items-center">
-              <Button variant="outline" className="ml-4">
-                Sign In
-              </Button>
+              {session ? (
+                <>
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="mr-2">Dashboard</Button>
+                  </Link>
+                  <Button variant="outline" onClick={() => signOut()}>Sign Out</Button>
+                </>
+              ) : (
+                <Button variant="outline" onClick={() => signIn()}>Sign In</Button>
+              )}
             </div>
           </div>
         </nav>

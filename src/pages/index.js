@@ -8,6 +8,7 @@ import FeaturedCategories from '@/components/FeaturedCategories';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
 import NewsletterSubscription from '@/components/NewsletterSubscription';
+import { Combobox } from "@/components/ui/combobox";
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
@@ -15,14 +16,21 @@ const recommendedProducts = [
   { id: 3, name: 'HR Master', category: 'HR Solutions', description: 'Comprehensive HR management platform', rating: 4.7 },
 ];
 
+const searchSuggestions = [
+  { label: 'CRM Software', value: 'crm' },
+  { label: 'Business Loans', value: 'business-loans' },
+  { label: 'Credit Cards', value: 'credit-cards' },
+  { label: 'HR Solutions', value: 'hr-solutions' },
+  { label: 'Accounting Software', value: 'accounting' },
+];
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
   const [recentlyViewed, addRecentlyViewed] = useRecentlyViewed('recentlyViewedProducts', 3);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+  const handleSearch = (value) => {
+    router.push(`/search?q=${encodeURIComponent(value)}`);
   };
 
   useEffect(() => {
@@ -43,20 +51,13 @@ export default function Home() {
             Find the Best SMB Solutions
           </motion.h1>
 
-          <form onSubmit={handleSearch} className="w-full max-w-md mb-8">
-            <div className="flex items-center">
-              <Input
-                type="text"
-                placeholder="Search for software, loans, credit cards, or HR solutions"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow"
-              />
-              <Button type="submit" className="ml-2">
-                Search
-              </Button>
-            </div>
-          </form>
+          <div className="w-full max-w-md mb-8">
+            <Combobox
+              items={searchSuggestions}
+              placeholder="Search for software, loans, credit cards, or HR solutions"
+              onSelect={handleSearch}
+            />
+          </div>
 
           <FeaturedCategories />
 

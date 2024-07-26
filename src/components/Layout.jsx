@@ -12,6 +12,7 @@ import Footer from './Footer';
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import Notifications from './Notifications';
+import GlobalSearch from './GlobalSearch';
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function Layout({ children }) {
       <header className="bg-white dark:bg-gray-800 shadow-sm">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex">
+            <div className="flex items-center">
               <Link href="/" className="flex-shrink-0 flex items-center font-bold text-xl text-primary">
                 SMB Solutions
               </Link>
@@ -69,6 +70,9 @@ export default function Layout({ children }) {
               </div>
             </div>
             <div className="flex items-center">
+              <div className="w-64 mr-4">
+                <GlobalSearch />
+              </div>
               <Button
                 variant="ghost"
                 size="icon"

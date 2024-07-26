@@ -6,14 +6,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
 import { toast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const profileSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Invalid email address." }),
+  company: z.string().min(2, { message: "Company name must be at least 2 characters." }),
+  role: z.string().min(2, { message: "Role must be at least 2 characters." }),
+});
 
 export default function Profile() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [name, setName] = useState(session?.user?.name || '');
-  const [email, setEmail] = useState(session?.user?.email || '');
-  const [company, setCompany] = useState('Acme Inc.');
-  const [role, setRole] = useState('Manager');
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: session?.user?.name || '',
+      email: session?.user?.email || '',
+      company: 'Acme Inc.',
+      role: 'Manager',
+    },
+  });
 
   if (status === 'loading') {
     return <Layout><p>Loading...</p></Layout>;
@@ -24,10 +40,9 @@ export default function Profile() {
     return null;
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
     // Here you would typically update the user's profile
-    console.log('Updating profile:', { name, email, company, role });
+    console.log('Updating profile:', data);
     toast({
       title: "Profile Updated",
       description: "Your profile has been successfully updated.",
@@ -43,46 +58,42 @@ export default function Profile() {
             <CardTitle>Edit Your Profile</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                 <Input
                   id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
+                  {...register("name")}
+                  aria-invalid={errors.name ? "true" : "false"}
                 />
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                 <Input
                   id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  {...register("email")}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
               </div>
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700">Company</label>
                 <Input
                   id="company"
-                  type="text"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  required
+                  {...register("company")}
+                  aria-invalid={errors.company ? "true" : "false"}
                 />
+                {errors.company && <p className="text-red-500 text-sm mt-1">{errors.company.message}</p>}
               </div>
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
                 <Input
                   id="role"
-                  type="text"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  required
+                  {...register("role")}
+                  aria-invalid={errors.role ? "true" : "false"}
                 />
+                {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
               </div>
               <Button type="submit">Update Profile</Button>
             </form>

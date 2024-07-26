@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Command, CommandInput, CommandList, CommandItem } from "@/components/ui/command";
 
 const allProducts = [
   { id: 'sw1', name: 'CRM Pro', category: 'Software' },
@@ -20,14 +21,13 @@ export default function GlobalSearch() {
   const [searchResults, setSearchResults] = useState([]);
   const router = useRouter();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  useEffect(() => {
     const results = allProducts.filter(product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSearchResults(results);
-  };
+  }, [searchTerm]);
 
   const handleResultClick = (result) => {
     let url;
@@ -52,32 +52,26 @@ export default function GlobalSearch() {
 
   return (
     <div className="relative">
-      <form onSubmit={handleSearch} className="flex items-center">
-        <Input
-          type="text"
+      <Command>
+        <CommandInput
           placeholder="Search for products..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-grow"
+          onValueChange={setSearchTerm}
         />
-        <Button type="submit" className="ml-2">Search</Button>
-      </form>
-      {searchResults.length > 0 && (
-        <Card className="absolute z-10 w-full mt-2">
-          <CardContent className="p-2">
+        {searchResults.length > 0 && (
+          <CommandList>
             {searchResults.map((result) => (
-              <div
+              <CommandItem
                 key={result.id}
-                className="p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleResultClick(result)}
+                onSelect={() => handleResultClick(result)}
               >
-                <p className="font-semibold">{result.name}</p>
-                <p className="text-sm text-gray-500">{result.category}</p>
-              </div>
+                <span>{result.name}</span>
+                <span className="text-sm text-gray-500 ml-2">{result.category}</span>
+              </CommandItem>
             ))}
-          </CardContent>
-        </Card>
-      )}
+          </CommandList>
+        )}
+      </Command>
     </div>
   );
 }

@@ -5,8 +5,15 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from "next-themes";
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import * as Sentry from "@sentry/react";
 
-export default function App({ Component, pageProps: { session, ...pageProps } }) {
+Sentry.init({
+  dsn: "YOUR_SENTRY_DSN_HERE",
+  integrations: [new Sentry.BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -41,3 +48,5 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
     </SessionProvider>
   );
 }
+
+export default Sentry.withProfiler(MyApp);

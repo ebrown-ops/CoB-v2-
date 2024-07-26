@@ -76,12 +76,12 @@
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, var(--primary) 0%, #4a90e2 100%);
+  @apply bg-gradient-to-r from-primary to-secondary text-primary-foreground;
 }
 
 @media (max-width: 640px) {
   .responsive-grid {
-    grid-template-columns: 1fr;
+    @apply grid-cols-1;
   }
 }
 
@@ -95,62 +95,83 @@
 }
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
 }
 
 .focus-visible:focus {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  @apply outline-none ring-2 ring-ring ring-offset-2;
 }
 
 @media (max-width: 768px) {
   .mobile-menu {
-    display: none;
+    @apply hidden;
   }
   
   .mobile-menu.open {
-    display: block;
+    @apply block;
   }
 }
 
 /* Improve accessibility */
 a:focus, button:focus, input:focus, select:focus, textarea:focus {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  @apply outline-none ring-2 ring-ring ring-offset-2;
 }
 
 /* Improve mobile responsiveness */
 @media (max-width: 640px) {
   .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    @apply px-4;
   }
 
   h1 {
-    font-size: 1.5rem;
+    @apply text-2xl;
   }
 
   h2 {
-    font-size: 1.25rem;
+    @apply text-xl;
   }
 }
 
 /* Add smooth scrolling for better UX */
 html {
-  scroll-behavior: smooth;
+  @apply scroll-smooth;
 }
 
 /* Improve form element styling on mobile */
 @media (max-width: 640px) {
   input, select, textarea {
-    font-size: 16px; /* Prevents zoom on focus in iOS */
+    @apply text-base; /* Prevents zoom on focus in iOS */
   }
+}
+
+/* Dark mode styles */
+.dark .card {
+  @apply bg-gray-800 text-white;
+}
+
+.dark .button {
+  @apply bg-gray-700 text-white;
+}
+
+/* Micro-interactions */
+.hover-scale {
+  @apply transition-transform duration-300 ease-in-out;
+}
+
+.hover-scale:hover {
+  @apply transform scale-105;
+}
+
+/* Accessibility */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-white focus:text-black;
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }

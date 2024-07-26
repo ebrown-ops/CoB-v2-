@@ -4,7 +4,7 @@ import { Toaster } from "../components/ui/toaster";
 import ErrorBoundary from '../components/ErrorBoundary';
 import { ThemeProvider } from "next-themes";
 import { ComparisonProvider } from '../context/ComparisonContext';
-import ComparisonTutorial from '../components/ComparisonTutorial';
+import OnboardingTutorial from '../components/OnboardingTutorial';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -70,7 +70,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             <ErrorBoundary>
               <Component {...pageProps} />
               <Toaster />
-              <ComparisonTutorial />
+              <OnboardingTutorial />
             </ErrorBoundary>
           </ComparisonProvider>
         </ThemeProvider>

@@ -5,11 +5,11 @@ import { Bar, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recha
 export default function ComparisonTable({ products }) {
   if (!products || products.length === 0) return null;
 
-  const features = Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category');
+  const features = Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category' && key !== 'reviews');
 
   const highlightDifferences = (feature) => {
     const values = products.map(p => p[feature]);
-    return values.every(v => v === values[0]) ? 'bg-gray-100' : 'bg-yellow-100';
+    return values.every(v => v === values[0]) ? 'bg-gray-100 dark:bg-gray-800' : 'bg-yellow-100 dark:bg-yellow-900';
   };
 
   const renderCell = (value, feature) => {
@@ -41,7 +41,7 @@ export default function ComparisonTable({ products }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="sticky left-0 bg-white z-10">Feature</TableHead>
+            <TableHead className="sticky left-0 bg-white dark:bg-gray-900 z-10">Feature</TableHead>
             {products.map(product => (
               <TableHead key={product.id}>{product.name}</TableHead>
             ))}
@@ -50,13 +50,14 @@ export default function ComparisonTable({ products }) {
         <TableBody>
           {features.map(feature => (
             <TableRow key={feature} className={highlightDifferences(feature)}>
-              <TableCell className="font-medium sticky left-0 bg-white z-10">{feature}</TableCell>
+              <TableCell className="font-medium sticky left-0 bg-white dark:bg-gray-900 z-10">{feature}</TableCell>
               {products.map(product => (
                 <TableCell key={product.id}>
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
+                    className="hover-scale"
                   >
                     {renderCell(product[feature], feature)}
                   </motion.div>

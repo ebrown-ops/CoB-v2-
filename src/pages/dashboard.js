@@ -8,7 +8,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   if (status === 'loading') {
-    return <p>Loading...</p>;
+    return <Layout><p>Loading...</p></Layout>;
   }
 
   if (status === 'unauthenticated') {

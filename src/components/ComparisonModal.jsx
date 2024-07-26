@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Loader2 } from "lucide-react";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);
@@ -87,9 +88,12 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
                     <TableCell className="font-medium">{feature}</TableCell>
                     {products.map((product) => (
                       <TableCell key={product.id} className="text-center">
-                        {typeof product[feature] === 'boolean' 
-                          ? (product[feature] ? '✅' : '❌')
-                          : product[feature] || 'N/A'}
+                        <span data-tooltip-id={`${product.id}-${feature}`} data-tooltip-content={`${product.name} - ${feature}`}>
+                          {typeof product[feature] === 'boolean' 
+                            ? (product[feature] ? '✅' : '❌')
+                            : product[feature] || 'N/A'}
+                        </span>
+                        <ReactTooltip id={`${product.id}-${feature}`} />
                       </TableCell>
                     ))}
                   </TableRow>

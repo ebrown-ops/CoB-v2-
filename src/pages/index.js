@@ -8,6 +8,7 @@ import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
 import NewsletterSubscription from '@/components/NewsletterSubscription';
 import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from 'recharts';
+import Head from 'next/head';
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
@@ -35,6 +36,10 @@ export default function Home() {
 
   return (
     <Layout>
+      <Head>
+        <title>SMB Solutions - Find the Best Business Solutions</title>
+        <meta name="description" content="Discover top-rated software, loans, credit cards, and HR solutions for your small to medium-sized business." />
+      </Head>
       <div className="flex flex-col items-center justify-center min-h-screen py-2">
         <main className="flex flex-col items-center justify-center w-full flex-1 px-4 sm:px-20 text-center">
           <motion.h1 
@@ -57,7 +62,7 @@ export default function Home() {
             <h2 className="text-2xl font-semibold mb-4">Recommended for You</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {recommendedProducts.map((product) => (
-                <Card key={product.id}>
+                <Card key={product.id} className="hover:shadow-lg transition-shadow duration-300">
                   <CardHeader>
                     <CardTitle>{product.name}</CardTitle>
                     <CardDescription>{product.category}</CardDescription>
@@ -113,7 +118,7 @@ export default function Home() {
               <h2 className="text-2xl font-semibold mb-4">Recently Viewed</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {recentlyViewed.map((product) => (
-                  <Card key={product.id}>
+                  <Card key={product.id} className="hover:shadow-lg transition-shadow duration-300">
                     <CardHeader>
                       <CardTitle>{product.name}</CardTitle>
                       <CardDescription>{product.category}</CardDescription>
@@ -139,7 +144,7 @@ export default function Home() {
           >
             <h2 className="text-2xl font-semibold mb-4">Sponsored Solutions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="border-2 border-primary">
+              <Card className="border-2 border-primary hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                   <CardTitle>Premium CRM Software</CardTitle>
                   <CardDescription>Boost your sales with our top-rated CRM</CardDescription>
@@ -148,7 +153,7 @@ export default function Home() {
                   <Button variant="outline">Learn More</Button>
                 </CardContent>
               </Card>
-              <Card className="border-2 border-primary">
+              <Card className="border-2 border-primary hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                   <CardTitle>Business Credit Card</CardTitle>
                   <CardDescription>0% APR for 12 months, 2% cashback on all purchases</CardDescription>
@@ -157,7 +162,7 @@ export default function Home() {
                   <Button variant="outline">Apply Now</Button>
                 </CardContent>
               </Card>
-              <Card className="border-2 border-primary">
+              <Card className="border-2 border-primary hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                   <CardTitle>SMB Loan</CardTitle>
                   <CardDescription>Low-interest loans for growing businesses</CardDescription>

@@ -9,12 +9,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import CreditCardCalculator from './CreditCardCalculator';
 import LoanCalculator from './LoanCalculator';
 import HRSolutionsCalculator from './HRSolutionsCalculator';
-import { Star } from 'lucide-react';
-
-console.log('ProductList component is being loaded');
+import { Star, Share2 } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const { toast } = useToast();
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/${category}/${product.id}`)
+      .then(() => {
+        toast({
+          title: "Link Copied",
+          description: "Product link has been copied to clipboard.",
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Failed to Copy",
+          description: "Unable to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
 
   return (
     <motion.div className="relative" style={{ perspective: '1000px' }}>
@@ -26,7 +43,7 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
             exit={{ rotateY: 90 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="hover:shadow-lg transition-shadow duration-300">
+            <Card className="hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800">
               <CardHeader>
                 <CardTitle>{product.name}</CardTitle>
                 <CardDescription>{product.description}</CardDescription>
@@ -40,12 +57,12 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
                       className={`h-5 w-5 ${
                         star <= Math.round(product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length)
                           ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
+                          : 'text-gray-300 dark:text-gray-600'
                       }`}
                     />
                   ))}
                 </div>
-                <Button onClick={() => setIsFlipped(true)} className="mt-4">See More Details</Button>
+                <Button onClick={() => setIsFlipped(true)} className="mt-4 w-full">See More Details</Button>
               </CardContent>
             </Card>
           </motion.div>
@@ -56,7 +73,7 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
             animate={{ rotateY: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="hover:shadow-lg transition-shadow duration-300">
+            <Card className="hover:shadow-lg transition-shadow duration-300 dark:bg-gray-800">
               <CardContent>
                 {Object.entries(product).map(([key, value]) => {
                   if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
@@ -69,7 +86,7 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
                 <div className="mt-4">
                   <h4 className="font-semibold">Reviews:</h4>
                   {product.reviews.map((review) => (
-                    <div key={review.id} className="mt-2 p-2 bg-gray-100 rounded">
+                    <div key={review.id} className="mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded">
                       <p>Rating: {review.rating}/5</p>
                       <p className="italic">"{review.comment}"</p>
                     </div>
@@ -85,9 +102,10 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
                   >
                     {isSelected ? "Remove" : "Compare"}
                   </Button>
-                  <Link href={`/${category}/${product.id}`}>
-                    <Button variant="outline">View Details</Button>
-                  </Link>
+                  <Button onClick={handleShare} variant="outline">
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Share
+                  </Button>
                 </div>
                 <Button onClick={() => setIsFlipped(false)} className="mt-4 w-full">Back</Button>
               </CardContent>

@@ -1,8 +1,8 @@
-import Layout from '@/components/Layout';
-import ProductList from '@/components/ProductList';
-import ComparisonTable from '@/components/ComparisonTable';
-import FloatingComparisonBar from '@/components/FloatingComparisonBar';
-import { useComparison } from '@/context/ComparisonContext';
+import Layout from '../../components/Layout';
+import ProductList from '../../components/ProductList';
+import ComparisonTable from '../../components/ComparisonTable';
+import FloatingComparisonBar from '../../components/FloatingComparisonBar';
+import { useComparison } from '../../context/ComparisonContext';
 import { useState } from 'react';
 
 console.log('Credit Cards page is being loaded');

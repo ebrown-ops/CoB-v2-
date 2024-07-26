@@ -1,12 +1,14 @@
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
-import { Toaster } from "@/components/ui/toaster";
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { Toaster } from "../components/ui/toaster";
+import ErrorBoundary from '../components/ErrorBoundary';
 import { ThemeProvider } from "next-themes";
-import { ComparisonProvider } from '@/context/ComparisonContext';
-import ComparisonTutorial from '@/components/ComparisonTutorial';
+import { ComparisonProvider } from '../context/ComparisonContext';
+import ComparisonTutorial from '../components/ComparisonTutorial';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+
+console.log('_app.js is being loaded');
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();

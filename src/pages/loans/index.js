@@ -6,8 +6,6 @@ import { useComparison } from '../../context/ComparisonContext';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-console.log('Loans page is being loaded');
-
 const loans = [
   { 
     id: 1, 
@@ -87,7 +85,6 @@ const loans = [
 ];
 
 export default function LoansPage() {
-  console.log('LoansPage component is rendering');
   const { selectedItems, clearItems } = useComparison();
   const [isComparing, setIsComparing] = useState(false);
 

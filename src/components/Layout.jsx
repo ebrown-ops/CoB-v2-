@@ -9,8 +9,6 @@ import Notifications from './Notifications';
 import GlobalSearch from './GlobalSearch';
 import ProductNavigation from './ProductNavigation';
 
-console.log('Layout component is being loaded');
-
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();

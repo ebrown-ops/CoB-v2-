@@ -9,8 +9,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 
-console.log('_app.js is being loaded');
-
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
 

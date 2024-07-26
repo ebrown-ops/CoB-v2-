@@ -22,6 +22,7 @@ export default function Custom404() {
   );
 }
 
+// This ensures that Next.js generates this page as a static HTML file
 export async function getStaticProps() {
   return {
     props: {},

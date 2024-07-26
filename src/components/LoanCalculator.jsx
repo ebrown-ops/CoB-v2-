@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
 export default function LoanCalculator() {
   const [loanAmount, setLoanAmount] = useState('');
@@ -21,12 +21,12 @@ export default function LoanCalculator() {
   };
 
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
-        <CardTitle>Loan Calculator</CardTitle>
+        <CardTitle className="text-lg">Loan Calculator</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div>
             <label htmlFor="loanAmount" className="block text-sm font-medium text-gray-700">Loan Amount ($)</label>
             <Input
@@ -35,6 +35,7 @@ export default function LoanCalculator() {
               value={loanAmount}
               onChange={(e) => setLoanAmount(e.target.value)}
               placeholder="Enter loan amount"
+              className="mt-1"
             />
           </div>
           <div>
@@ -45,6 +46,7 @@ export default function LoanCalculator() {
               value={interestRate}
               onChange={(e) => setInterestRate(e.target.value)}
               placeholder="Enter interest rate"
+              className="mt-1"
             />
           </div>
           <div>
@@ -55,11 +57,12 @@ export default function LoanCalculator() {
               value={loanTerm}
               onChange={(e) => setLoanTerm(e.target.value)}
               placeholder="Enter loan term"
+              className="mt-1"
             />
           </div>
-          <Button onClick={calculateLoan}>Calculate</Button>
+          <Button onClick={calculateLoan} className="w-full">Calculate</Button>
           {monthlyPayment !== null && (
-            <div className="mt-4">
+            <div className="mt-2">
               <p className="font-semibold">Estimated Monthly Payment: ${monthlyPayment}</p>
             </div>
           )}

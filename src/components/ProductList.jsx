@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import Link from 'next/link';
 import { useComparison } from '../context/ComparisonContext';
 import { motion } from "framer-motion";
@@ -10,6 +10,48 @@ import CreditCardCalculator from './CreditCardCalculator';
 import LoanCalculator from './LoanCalculator';
 
 console.log('ProductList component is being loaded');
+
+const ProductCard = ({ product, category, onToggleSelection, isSelected }) => (
+  <Card className="hover:shadow-lg transition-shadow duration-300">
+    <CardHeader>
+      <CardTitle>{product.name}</CardTitle>
+      <CardDescription>{product.description}</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p><strong>Ranking:</strong> {product.ranking}</p>
+      {Object.entries(product).map(([key, value]) => {
+        if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
+          return (
+            <p key={key}><strong>{key}:</strong> {value}</p>
+          );
+        }
+        return null;
+      })}
+      <div className="mt-4">
+        <h4 className="font-semibold">Reviews:</h4>
+        {product.reviews.map((review) => (
+          <div key={review.id} className="mt-2 p-2 bg-gray-100 rounded">
+            <p>Rating: {review.rating}/5</p>
+            <p className="italic">"{review.comment}"</p>
+          </div>
+        ))}
+      </div>
+      {category === 'credit-cards' && <CreditCardCalculator />}
+      {category === 'loans' && <LoanCalculator />}
+      <div className="mt-4 flex justify-between">
+        <Button 
+          onClick={() => onToggleSelection(product)}
+          variant={isSelected ? "secondary" : "default"}
+        >
+          {isSelected ? "Remove" : "Compare"}
+        </Button>
+        <Link href={`/${category}/${product.id}`}>
+          <Button variant="outline">View Details</Button>
+        </Link>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 const ProductList = ({ products, category }) => {
   console.log('ProductList component is rendering', { products, category });
@@ -75,45 +117,12 @@ const ProductList = ({ products, category }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-                <CardDescription>{product.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p><strong>Ranking:</strong> {product.ranking}</p>
-                {Object.entries(product).map(([key, value]) => {
-                  if (key !== 'id' && key !== 'name' && key !== 'description' && key !== 'ranking' && key !== 'reviews') {
-                    return (
-                      <p key={key}><strong>{key}:</strong> {value}</p>
-                    );
-                  }
-                  return null;
-                })}
-                <div className="mt-4">
-                  <h4 className="font-semibold">Reviews:</h4>
-                  {product.reviews.map((review) => (
-                    <div key={review.id} className="mt-2">
-                      <p>Rating: {review.rating}/5</p>
-                      <p>"{review.comment}"</p>
-                    </div>
-                  ))}
-                </div>
-                {category === 'credit-cards' && <CreditCardCalculator />}
-                {category === 'loans' && <LoanCalculator />}
-                <div className="mt-4 flex justify-between">
-                  <Button 
-                    onClick={() => toggleProductSelection(product)}
-                    variant={selectedItems.find(item => item.id === product.id) ? "secondary" : "default"}
-                  >
-                    {selectedItems.find(item => item.id === product.id) ? "Remove" : "Compare"}
-                  </Button>
-                  <Link href={`/${category}/${product.id}`}>
-                    <Button variant="outline">View Details</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+            <ProductCard
+              product={product}
+              category={category}
+              onToggleSelection={toggleProductSelection}
+              isSelected={selectedItems.some(item => item.id === product.id)}
+            />
           </motion.div>
         ))}
       </div>

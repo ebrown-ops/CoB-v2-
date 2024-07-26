@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
 export default function CreditCardCalculator() {
   const [monthlySpend, setMonthlySpend] = useState('');
@@ -18,12 +18,12 @@ export default function CreditCardCalculator() {
   };
 
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
-        <CardTitle>Rewards Calculator</CardTitle>
+        <CardTitle className="text-lg">Rewards Calculator</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div>
             <label htmlFor="monthlySpend" className="block text-sm font-medium text-gray-700">Monthly Spend ($)</label>
             <Input
@@ -32,6 +32,7 @@ export default function CreditCardCalculator() {
               value={monthlySpend}
               onChange={(e) => setMonthlySpend(e.target.value)}
               placeholder="Enter your monthly spend"
+              className="mt-1"
             />
           </div>
           <div>
@@ -42,11 +43,12 @@ export default function CreditCardCalculator() {
               value={cashbackRate}
               onChange={(e) => setCashbackRate(e.target.value)}
               placeholder="Enter cashback rate"
+              className="mt-1"
             />
           </div>
-          <Button onClick={calculateRewards}>Calculate Rewards</Button>
+          <Button onClick={calculateRewards} className="w-full">Calculate Rewards</Button>
           {annualRewards !== null && (
-            <div className="mt-4">
+            <div className="mt-2">
               <p className="font-semibold">Estimated Annual Rewards: ${annualRewards}</p>
             </div>
           )}

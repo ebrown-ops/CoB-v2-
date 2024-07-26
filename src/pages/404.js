@@ -2,10 +2,14 @@ import Link from 'next/link';
 import Layout from '@/components/Layout';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
+import Head from 'next/head';
 
 export default function Custom404() {
   return (
     <Layout>
+      <Head>
+        <title>404 - Page Not Found</title>
+      </Head>
       <motion.div 
         className="flex flex-col items-center justify-center min-h-screen py-2"
         initial={{ opacity: 0, y: -20 }}
@@ -22,7 +26,6 @@ export default function Custom404() {
   );
 }
 
-// This ensures that Next.js generates this page as a static HTML file
 export async function getStaticProps() {
   return {
     props: {},

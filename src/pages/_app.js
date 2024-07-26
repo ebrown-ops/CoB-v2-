@@ -6,15 +6,6 @@ import { ThemeProvider } from "next-themes";
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-// Temporarily remove Sentry to restore functionality
-// import * as Sentry from "@sentry/react";
-
-// Sentry.init({
-//   dsn: "YOUR_SENTRY_DSN_HERE",
-//   integrations: [new Sentry.BrowserTracing()],
-//   tracesSampleRate: 1.0,
-// });
-
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
 
@@ -32,10 +23,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       console.log(`App is changing to ${url}`);
     };
 
+    const handleError = (error) => {
+      console.error('Application error:', error);
+      // Implement your error logging logic here
+    };
+
     router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('error', handleError);
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('error', handleError);
     };
   }, [router.events]);
 

@@ -49,17 +49,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   }, [router.events]);
 
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider attribute="class">
-        <ComparisonProvider>
-          <ErrorBoundary>
+    <ErrorBoundary>
+      <SessionProvider session={session}>
+        <ThemeProvider attribute="class">
+          <ComparisonProvider>
             <Component {...pageProps} />
             <Toaster />
             <ComparisonTutorial />
-          </ErrorBoundary>
-        </ComparisonProvider>
-      </ThemeProvider>
-    </SessionProvider>
+          </ComparisonProvider>
+        </ThemeProvider>
+      </SessionProvider>
+    </ErrorBoundary>
   );
 }
 

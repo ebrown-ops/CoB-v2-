@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+console.log('ComparisonContext is being loaded');
+
 const ComparisonContext = createContext();
 
 export function ComparisonProvider({ children }) {

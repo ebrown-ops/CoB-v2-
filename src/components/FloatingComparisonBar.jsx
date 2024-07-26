@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+
+console.log('FloatingComparisonBar is being loaded');
 
 export default function FloatingComparisonBar({ selectedItems, onCompare, onClear }) {
   const [isVisible, setIsVisible] = useState(false);

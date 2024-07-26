@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import Footer from './Footer';
 import { useTheme } from "next-themes";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import Notifications from './Notifications';
 import GlobalSearch from './GlobalSearch';
 import ProductNavigation from './ProductNavigation';
+
+console.log('Layout component is being loaded');
 
 export default function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

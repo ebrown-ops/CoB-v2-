@@ -34,6 +34,6 @@ export default NextAuth({
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key-here', // Add this line
-  debug: process.env.NODE_ENV === 'development', // Add this line for better debugging
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
 });

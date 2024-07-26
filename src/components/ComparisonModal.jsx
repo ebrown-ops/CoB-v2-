@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { motion } from "framer-motion";
 
 export default function ComparisonModal({ isOpen, onClose, products }) {
   const [open, setOpen] = useState(isOpen);
@@ -22,32 +23,42 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Product Comparison</DialogTitle>
           <DialogDescription>Compare features of selected products</DialogDescription>
         </DialogHeader>
         {products.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Feature</TableHead>
-                {products.map((product) => (
-                  <TableHead key={product.id}>{product.name}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {features.map((feature) => (
-                <TableRow key={feature}>
-                  <TableCell className="font-medium">{feature}</TableCell>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-1/4">Feature</TableHead>
                   {products.map((product) => (
-                    <TableCell key={product.id}>{product[feature]}</TableCell>
+                    <TableHead key={product.id} className="w-1/4">{product.name}</TableHead>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {features.map((feature) => (
+                  <TableRow key={feature}>
+                    <TableCell className="font-medium">{feature}</TableCell>
+                    {products.map((product) => (
+                      <TableCell key={product.id} className="text-center">
+                        {typeof product[feature] === 'boolean' 
+                          ? (product[feature] ? '✅' : '❌')
+                          : product[feature]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </motion.div>
         ) : (
           <p>No products selected for comparison.</p>
         )}

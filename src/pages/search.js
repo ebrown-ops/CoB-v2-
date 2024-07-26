@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 
 // Mock data for search results
 const mockResults = [
-  { id: 1, name: 'CRM Software A', category: 'Software', description: 'A powerful CRM solution for small businesses', rating: 4.5, price: '$49/month' },
-  { id: 2, name: 'Business Loan B', category: 'Loans', description: 'Flexible loan options for growing companies', rating: 4.2, interestRate: '5.99%' },
-  { id: 3, name: 'Credit Card C', category: 'Credit Cards', description: 'Rewards credit card for business expenses', rating: 4.7, annualFee: '$0' },
-  { id: 4, name: 'HR Platform D', category: 'HR Solutions', description: 'All-in-one HR management system', rating: 4.4, price: '$99/month' },
+  { id: 1, name: 'CRM Software A', category: 'Software', description: 'A powerful CRM solution for small businesses', rating: 4.5, price: 49 },
+  { id: 2, name: 'Business Loan B', category: 'Loans', description: 'Flexible loan options for growing companies', rating: 4.2, interestRate: 5.99 },
+  { id: 3, name: 'Credit Card C', category: 'Credit Cards', description: 'Rewards credit card for business expenses', rating: 4.7, annualFee: 0 },
+  { id: 4, name: 'HR Platform D', category: 'HR Solutions', description: 'All-in-one HR management system', rating: 4.4, price: 99 },
 ];
 
 export default function SearchResults() {
@@ -23,6 +25,7 @@ export default function SearchResults() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState('relevance');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [priceRange, setPriceRange] = useState([0, 100]);
 
   useEffect(() => {
     if (q) {
@@ -39,17 +42,25 @@ export default function SearchResults() {
           filteredResults = filteredResults.filter(item => item.category === filterCategory);
         }
 
+        filteredResults = filteredResults.filter(item => 
+          (item.price >= priceRange[0] && item.price <= priceRange[1]) ||
+          (item.interestRate >= priceRange[0] && item.interestRate <= priceRange[1]) ||
+          (item.annualFee >= priceRange[0] && item.annualFee <= priceRange[1])
+        );
+
         if (sortBy === 'rating') {
           filteredResults.sort((a, b) => b.rating - a.rating);
         } else if (sortBy === 'name') {
           filteredResults.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortBy === 'price') {
+          filteredResults.sort((a, b) => (a.price || a.interestRate || a.annualFee) - (b.price || b.interestRate || b.annualFee));
         }
 
         setResults(filteredResults);
         setIsLoading(false);
       }, 1000);
     }
-  }, [q, sortBy, filterCategory]);
+  }, [q, sortBy, filterCategory, priceRange]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -77,30 +88,51 @@ export default function SearchResults() {
           </div>
         </form>
 
-        <div className="mb-6 flex justify-between items-center">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="Software">Software</SelectItem>
-              <SelectItem value="Loans">Loans</SelectItem>
-              <SelectItem value="Credit Cards">Credit Cards</SelectItem>
-              <SelectItem value="HR Solutions">HR Solutions</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="relevance">Relevance</SelectItem>
-              <SelectItem value="rating">Rating</SelectItem>
-              <SelectItem value="name">Name</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div>
+            <Label htmlFor="category-filter">Category</Label>
+            <Select id="category-filter" value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="Software">Software</SelectItem>
+                <SelectItem value="Loans">Loans</SelectItem>
+                <SelectItem value="Credit Cards">Credit Cards</SelectItem>
+                <SelectItem value="HR Solutions">HR Solutions</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="sort-by">Sort by</Label>
+            <Select id="sort-by" value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="relevance">Relevance</SelectItem>
+                <SelectItem value="rating">Rating</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="price">Price</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="col-span-2">
+            <Label>Price Range</Label>
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={priceRange}
+              onValueChange={setPriceRange}
+              className="mt-2"
+            />
+            <div className="flex justify-between mt-2">
+              <span>${priceRange[0]}</span>
+              <span>${priceRange[1]}</span>
+            </div>
+          </div>
         </div>
 
         {isLoading ? (
@@ -132,9 +164,9 @@ export default function SearchResults() {
                     <span className="text-yellow-400">★</span>
                     <span className="ml-1">{result.rating}</span>
                   </div>
-                  {result.price && <p className="mt-2">Price: {result.price}</p>}
-                  {result.interestRate && <p className="mt-2">Interest Rate: {result.interestRate}</p>}
-                  {result.annualFee && <p className="mt-2">Annual Fee: {result.annualFee}</p>}
+                  {result.price && <p className="mt-2">Price: ${result.price}/month</p>}
+                  {result.interestRate && <p className="mt-2">Interest Rate: {result.interestRate}%</p>}
+                  {result.annualFee !== undefined && <p className="mt-2">Annual Fee: ${result.annualFee}</p>}
                 </CardContent>
               </Card>
             ))}

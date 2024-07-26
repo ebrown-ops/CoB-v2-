@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Footer from './Footer';
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Menu, X } from "lucide-react";
 import Notifications from './Notifications';
 import GlobalSearch from './GlobalSearch';
 
@@ -93,8 +93,27 @@ export default function Layout({ children }) {
               ) : (
                 <Button variant="outline" onClick={() => signIn()}>Sign In</Button>
               )}
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle Menu"
+                className="ml-2 sm:hidden"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
+          {isMenuOpen && (
+            <div className="sm:hidden">
+              <div className="pt-2 pb-3 space-y-1">
+                <Link href="/software" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Software</Link>
+                <Link href="/loans" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Loans</Link>
+                <Link href="/credit-cards" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Credit Cards</Link>
+                <Link href="/hr-solutions" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">HR Solutions</Link>
+              </div>
+            </div>
+          )}
         </nav>
       </header>
 

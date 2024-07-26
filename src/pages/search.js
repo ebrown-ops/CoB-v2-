@@ -9,12 +9,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 
-// Mock data for search results
+// Expanded mock data for search results
 const mockResults = [
   { id: 1, name: 'CRM Software A', category: 'Software', description: 'A powerful CRM solution for small businesses', rating: 4.5, price: 49 },
   { id: 2, name: 'Business Loan B', category: 'Loans', description: 'Flexible loan options for growing companies', rating: 4.2, interestRate: 5.99 },
   { id: 3, name: 'Credit Card C', category: 'Credit Cards', description: 'Rewards credit card for business expenses', rating: 4.7, annualFee: 0 },
   { id: 4, name: 'HR Platform D', category: 'HR Solutions', description: 'All-in-one HR management system', rating: 4.4, price: 99 },
+  { id: 5, name: 'ERP Software E', category: 'Software', description: 'Comprehensive ERP system for mid-sized businesses', rating: 4.3, price: 199 },
+  { id: 6, name: 'Equipment Financing F', category: 'Loans', description: 'Specialized loans for purchasing business equipment', rating: 4.1, interestRate: 4.99 },
+  { id: 7, name: 'Travel Rewards Card G', category: 'Credit Cards', description: 'Premium travel rewards for business travelers', rating: 4.6, annualFee: 95 },
+  { id: 8, name: 'Recruitment Tool H', category: 'HR Solutions', description: 'Streamline your hiring process with AI-powered tools', rating: 4.5, price: 79 },
+  { id: 9, name: 'Accounting Software I', category: 'Software', description: 'User-friendly accounting solution for small businesses', rating: 4.8, price: 39 },
+  { id: 10, name: 'Merchant Cash Advance J', category: 'Loans', description: 'Quick funding option based on future sales', rating: 3.9, interestRate: 8.99 },
 ];
 
 export default function SearchResults() {
@@ -25,7 +31,7 @@ export default function SearchResults() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState('relevance');
   const [filterCategory, setFilterCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 100]);
+  const [priceRange, setPriceRange] = useState([0, 200]);
 
   useEffect(() => {
     if (q) {
@@ -122,7 +128,7 @@ export default function SearchResults() {
             <Label>Price Range</Label>
             <Slider
               min={0}
-              max={100}
+              max={200}
               step={1}
               value={priceRange}
               onValueChange={setPriceRange}

@@ -1,11 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { motion } from "framer-motion";
 import { Bar, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function ComparisonTable({ products }) {
   if (!products || products.length === 0) return null;
 
-  const features = Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category');
+  const features = Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category' && key !== 'reviews');
 
   const highlightDifferences = (feature) => {
     const values = products.map(p => p[feature]);

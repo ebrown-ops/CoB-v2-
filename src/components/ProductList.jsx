@@ -75,11 +75,13 @@ const ProductList = ({ products, category }) => {
         return a.name.localeCompare(b.name);
       } else if (sortBy === 'ranking') {
         return a.ranking - b.ranking;
+      } else if (sortBy === 'price' && 'price' in a) {
+        return parseFloat(a.price) - parseFloat(b.price);
       }
       return 0;
     });
     setFilteredProducts(sortedProducts);
-  }, [sortBy]);
+  }, [sortBy, filteredProducts]);
 
   const toggleProductSelection = (product) => {
     if (selectedItems.find(item => item.id === product.id)) {
@@ -106,6 +108,7 @@ const ProductList = ({ products, category }) => {
           <SelectContent>
             <SelectItem value="name">Name</SelectItem>
             <SelectItem value="ranking">Ranking</SelectItem>
+            {category !== 'loans' && <SelectItem value="price">Price</SelectItem>}
           </SelectContent>
         </Select>
       </div>

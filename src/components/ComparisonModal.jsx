@@ -46,7 +46,7 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
     return null;
   }
 
-  const features = products.length > 0 ? Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name') : [];
+  const features = products.length > 0 ? Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name' && key !== 'category') : [];
 
   const chartData = features.map(feature => {
     const data = { name: feature };

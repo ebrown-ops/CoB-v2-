@@ -7,8 +7,6 @@ import FeaturedCategories from '@/components/FeaturedCategories';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
 import NewsletterSubscription from '@/components/NewsletterSubscription';
-import { Combobox } from "@/components/ui/combobox";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
@@ -16,36 +14,9 @@ const recommendedProducts = [
   { id: 3, name: 'HR Master', category: 'HR Solutions', description: 'Comprehensive HR management platform', rating: 4.7 },
 ];
 
-const searchSuggestions = [
-  { label: 'CRM Software', value: 'crm' },
-  { label: 'Business Loans', value: 'business-loans' },
-  { label: 'Credit Cards', value: 'credit-cards' },
-  { label: 'HR Solutions', value: 'hr-solutions' },
-  { label: 'Accounting Software', value: 'accounting' },
-];
-
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [recentlyViewed, addRecentlyViewed] = useRecentlyViewed('recentlyViewedProducts', 3);
-
-  const handleSearch = (value) => {
-    setIsLoading(true);
-    // Simulating API call
-    setTimeout(() => {
-      const results = searchSuggestions.filter(item => 
-        item.label.toLowerCase().includes(value.toLowerCase())
-      );
-      setSearchResults(results);
-      setIsLoading(false);
-    }, 300);
-  };
-
-  const handleSelectSearch = (value) => {
-    router.push(`/search?q=${encodeURIComponent(value)}`);
-  };
 
   useEffect(() => {
     // Simulating adding a recently viewed item
@@ -64,21 +35,6 @@ export default function Home() {
           >
             Find the Best SMB Solutions
           </motion.h1>
-
-          <div className="w-full max-w-md mb-8">
-            <Combobox
-              items={searchResults}
-              placeholder="Search for software, loans, credit cards, or HR solutions"
-              onInputChange={handleSearch}
-              onSelect={handleSelectSearch}
-            />
-            {isLoading && (
-              <div className="mt-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full mt-2" />
-              </div>
-            )}
-          </div>
 
           <FeaturedCategories />
 

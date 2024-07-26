@@ -26,7 +26,16 @@ export default function GlobalSearch() {
   const [searchResults, setSearchResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const router = useRouter();
+
+  useEffect(() => {
+    const storedSearches = localStorage.getItem('recentSearches');
+    if (storedSearches) {
+      setRecentSearches(JSON.parse(storedSearches));
+    }
+  }, []);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -38,6 +47,8 @@ export default function GlobalSearch() {
         );
         setSearchResults(results);
         setIsLoading(false);
+        // Log analytics for search attempt
+        console.log('Search attempt:', { term: searchTerm, resultsCount: results.length });
       } else {
         setSearchResults([]);
       }
@@ -66,8 +77,9 @@ export default function GlobalSearch() {
     }
     router.push(url);
     setIsOpen(false);
+    addToRecentSearches(searchTerm);
     // Log search analytics
-    console.log('Search clicked:', { term: searchTerm, result: result.name });
+    console.log('Search result clicked:', { term: searchTerm, result: result.name });
   };
 
   const handleSearch = (e) => {
@@ -75,13 +87,33 @@ export default function GlobalSearch() {
     if (searchTerm) {
       router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
       setIsOpen(false);
+      addToRecentSearches(searchTerm);
       // Log search analytics
       console.log('Search submitted:', { term: searchTerm });
     }
   };
 
+  const addToRecentSearches = (term) => {
+    const updatedSearches = [term, ...recentSearches.filter(t => t !== term)].slice(0, 5);
+    setRecentSearches(updatedSearches);
+    localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < searchResults.length - 1 ? prev + 1 : prev));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : prev));
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault();
+      handleResultClick(searchResults[selectedIndex]);
+    }
+  };
+
   return (
-    <form onSubmit={handleSearch} className="relative">
+    <form onSubmit={handleSearch} className="relative w-full max-w-sm sm:max-w-md md:max-w-lg">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="relative">
@@ -90,11 +122,12 @@ export default function GlobalSearch() {
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-4"
+              onKeyDown={handleKeyDown}
+              className="pl-8 pr-4 w-full"
             />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0" align="start">
+        <PopoverContent className="w-full p-0" align="start">
           <Command>
             <CommandInput placeholder="Search products..." value={searchTerm} onValueChange={setSearchTerm} />
             <CommandList>
@@ -104,18 +137,34 @@ export default function GlobalSearch() {
                   Searching...
                 </CommandItem>
               ) : (
-                searchResults.map((result) => (
-                  <CommandItem
-                    key={result.id}
-                    onSelect={() => handleResultClick(result)}
-                  >
-                    <span>{result.name}</span>
-                    <span className="text-sm text-muted-foreground ml-2">{result.category}</span>
-                  </CommandItem>
-                ))
-              )}
-              {searchResults.length === 0 && !isLoading && (
-                <CommandItem>No results found</CommandItem>
+                <>
+                  {searchResults.map((result, index) => (
+                    <CommandItem
+                      key={result.id}
+                      onSelect={() => handleResultClick(result)}
+                      className={selectedIndex === index ? 'bg-accent' : ''}
+                    >
+                      <span>{result.name}</span>
+                      <span className="text-sm text-muted-foreground ml-2">{result.category}</span>
+                    </CommandItem>
+                  ))}
+                  {searchResults.length === 0 && searchTerm && (
+                    <CommandItem>No results found</CommandItem>
+                  )}
+                  {!searchTerm && recentSearches.length > 0 && (
+                    <>
+                      <CommandItem disabled>Recent Searches</CommandItem>
+                      {recentSearches.map((term, index) => (
+                        <CommandItem
+                          key={index}
+                          onSelect={() => setSearchTerm(term)}
+                        >
+                          {term}
+                        </CommandItem>
+                      ))}
+                    </>
+                  )}
+                </>
               )}
             </CommandList>
           </Command>

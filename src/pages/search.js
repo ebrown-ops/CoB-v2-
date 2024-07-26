@@ -23,55 +23,85 @@ const mockResults = [
   { id: 10, name: 'Merchant Cash Advance J', category: 'Loans', description: 'Quick funding option based on future sales', rating: 3.9, interestRate: 8.99 },
 ];
 
-export default function SearchResults() {
+export async function getServerSideProps(context) {
+  const { q } = context.query;
+  // Simulate API call or database query
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  let filteredResults = mockResults;
+  if (q) {
+    filteredResults = mockResults.filter(item => 
+      item.name.toLowerCase().includes(q.toLowerCase()) ||
+      item.category.toLowerCase().includes(q.toLowerCase()) ||
+      item.description.toLowerCase().includes(q.toLowerCase())
+    );
+  }
+
+  return {
+    props: {
+      initialResults: filteredResults,
+      initialQuery: q || '',
+    },
+  };
+}
+
+export default function SearchResults({ initialResults, initialQuery }) {
   const router = useRouter();
-  const { q } = router.query;
-  const [searchTerm, setSearchTerm] = useState(q || '');
-  const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
+  const [results, setResults] = useState(initialResults);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('relevance');
   const [filterCategory, setFilterCategory] = useState('all');
   const [priceRange, setPriceRange] = useState([0, 200]);
 
   useEffect(() => {
-    if (q) {
+    const { q } = router.query;
+    if (q && q !== searchTerm) {
       setSearchTerm(q);
-      // Simulate API call
-      setTimeout(() => {
-        let filteredResults = mockResults.filter(item => 
-          item.name.toLowerCase().includes(q.toLowerCase()) ||
-          item.category.toLowerCase().includes(q.toLowerCase()) ||
-          item.description.toLowerCase().includes(q.toLowerCase())
-        );
-
-        if (filterCategory !== 'all') {
-          filteredResults = filteredResults.filter(item => item.category === filterCategory);
-        }
-
-        filteredResults = filteredResults.filter(item => 
-          (item.price >= priceRange[0] && item.price <= priceRange[1]) ||
-          (item.interestRate >= priceRange[0] && item.interestRate <= priceRange[1]) ||
-          (item.annualFee >= priceRange[0] && item.annualFee <= priceRange[1])
-        );
-
-        if (sortBy === 'rating') {
-          filteredResults.sort((a, b) => b.rating - a.rating);
-        } else if (sortBy === 'name') {
-          filteredResults.sort((a, b) => a.name.localeCompare(b.name));
-        } else if (sortBy === 'price') {
-          filteredResults.sort((a, b) => (a.price || a.interestRate || a.annualFee) - (b.price || b.interestRate || b.annualFee));
-        }
-
-        setResults(filteredResults);
-        setIsLoading(false);
-      }, 1000);
+      performSearch(q);
     }
-  }, [q, sortBy, filterCategory, priceRange]);
+  }, [router.query]);
+
+  const performSearch = (term) => {
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      let filteredResults = mockResults.filter(item => 
+        item.name.toLowerCase().includes(term.toLowerCase()) ||
+        item.category.toLowerCase().includes(term.toLowerCase()) ||
+        item.description.toLowerCase().includes(term.toLowerCase())
+      );
+
+      if (filterCategory !== 'all') {
+        filteredResults = filteredResults.filter(item => item.category === filterCategory);
+      }
+
+      filteredResults = filteredResults.filter(item => 
+        (item.price >= priceRange[0] && item.price <= priceRange[1]) ||
+        (item.interestRate >= priceRange[0] && item.interestRate <= priceRange[1]) ||
+        (item.annualFee >= priceRange[0] && item.annualFee <= priceRange[1])
+      );
+
+      if (sortBy === 'rating') {
+        filteredResults.sort((a, b) => b.rating - a.rating);
+      } else if (sortBy === 'name') {
+        filteredResults.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === 'price') {
+        filteredResults.sort((a, b) => (a.price || a.interestRate || a.annualFee) - (b.price || b.interestRate || b.annualFee));
+      }
+
+      setResults(filteredResults);
+      setIsLoading(false);
+
+      // Log search analytics
+      console.log('Search performed:', { term, resultsCount: filteredResults.length });
+    }, 500);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+    router.push(`/search?q=${encodeURIComponent(searchTerm)}`, undefined, { shallow: true });
+    performSearch(searchTerm);
   };
 
   return (
@@ -97,7 +127,7 @@ export default function SearchResults() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div>
             <Label htmlFor="category-filter">Category</Label>
-            <Select id="category-filter" value={filterCategory} onValueChange={setFilterCategory}>
+            <Select id="category-filter" value={filterCategory} onValueChange={(value) => { setFilterCategory(value); performSearch(searchTerm); }}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by Category" />
               </SelectTrigger>
@@ -112,7 +142,7 @@ export default function SearchResults() {
           </div>
           <div>
             <Label htmlFor="sort-by">Sort by</Label>
-            <Select id="sort-by" value={sortBy} onValueChange={setSortBy}>
+            <Select id="sort-by" value={sortBy} onValueChange={(value) => { setSortBy(value); performSearch(searchTerm); }}>
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -131,7 +161,7 @@ export default function SearchResults() {
               max={200}
               step={1}
               value={priceRange}
-              onValueChange={setPriceRange}
+              onValueChange={(value) => { setPriceRange(value); performSearch(searchTerm); }}
               className="mt-2"
             />
             <div className="flex justify-between mt-2">

@@ -1,29 +1,70 @@
 import Link from 'next/link';
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Layout({ children }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
-              <Link href="/" className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex-shrink-0 flex items-center font-bold text-xl text-primary">
                 SMB Solutions
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link href="/software" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Software
-                </Link>
-                <Link href="/loans" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Loans
-                </Link>
-                <Link href="/credit-cards" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">Software</Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link href="/software/crm">CRM</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/software/erp">ERP</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/software/accounting">Accounting</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">Loans</Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link href="/loans/business">Business Loans</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/loans/equipment">Equipment Financing</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/loans/line-of-credit">Line of Credit</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Link href="/credit-cards" className="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
                   Credit Cards
                 </Link>
-                <Link href="/hr-solutions" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                <Link href="/hr-solutions" className="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
                   HR Solutions
                 </Link>
               </div>
+            </div>
+            <div className="flex items-center">
+              <Button variant="outline" className="ml-4">
+                Sign In
+              </Button>
             </div>
           </div>
         </nav>

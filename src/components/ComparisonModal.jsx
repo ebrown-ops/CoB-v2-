@@ -14,6 +14,12 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
     onClose();
   };
 
+  if (!products || products.length === 0) {
+    return null;
+  }
+
+  const features = products.length > 0 ? Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name') : [];
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-4xl">
@@ -21,26 +27,30 @@ export default function ComparisonModal({ isOpen, onClose, products }) {
           <DialogTitle>Product Comparison</DialogTitle>
           <DialogDescription>Compare features of selected products</DialogDescription>
         </DialogHeader>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Feature</TableHead>
-              {products.map((product) => (
-                <TableHead key={product.id}>{product.name}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Object.keys(products[0]).filter(key => key !== 'id' && key !== 'name').map((feature) => (
-              <TableRow key={feature}>
-                <TableCell className="font-medium">{feature}</TableCell>
+        {products.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Feature</TableHead>
                 {products.map((product) => (
-                  <TableCell key={product.id}>{product[feature]}</TableCell>
+                  <TableHead key={product.id}>{product.name}</TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {features.map((feature) => (
+                <TableRow key={feature}>
+                  <TableCell className="font-medium">{feature}</TableCell>
+                  {products.map((product) => (
+                    <TableCell key={product.id}>{product[feature]}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p>No products selected for comparison.</p>
+        )}
       </DialogContent>
     </Dialog>
   );

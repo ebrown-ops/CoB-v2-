@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import ComparisonModal from '@/components/ComparisonModal';
+import { toast } from "@/components/ui/use-toast";
 
 const softwareProducts = [
   { id: 1, name: 'CRM Pro', category: 'CRM', description: 'Advanced CRM for small businesses', price: '$49/month', users: 'Up to 10', features: 'Contact Management, Sales Tracking' },
@@ -21,6 +22,18 @@ export default function SoftwarePage() {
         ? prev.filter(p => p.id !== product.id)
         : [...prev, product]
     );
+  };
+
+  const handleCompare = () => {
+    if (selectedProducts.length < 2) {
+      toast({
+        title: "Not enough products selected",
+        description: "Please select at least two products to compare.",
+        variant: "destructive",
+      });
+    } else {
+      setIsCompareModalOpen(true);
+    }
   };
 
   return (
@@ -51,9 +64,9 @@ export default function SoftwarePage() {
             </Card>
           ))}
         </div>
-        {selectedProducts.length > 1 && (
+        {selectedProducts.length > 0 && (
           <div className="mt-8 text-center">
-            <Button onClick={() => setIsCompareModalOpen(true)}>Compare Selected Products</Button>
+            <Button onClick={handleCompare}>Compare Selected Products</Button>
           </div>
         )}
         <ComparisonModal 

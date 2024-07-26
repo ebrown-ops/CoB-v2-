@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CreditCardCalculator from './CreditCardCalculator';
 import LoanCalculator from './LoanCalculator';
 import HRSolutionsCalculator from './HRSolutionsCalculator';
+import { Star } from 'lucide-react';
 
 console.log('ProductList component is being loaded');
 
@@ -32,6 +33,18 @@ const ProductCard = ({ product, category, onToggleSelection, isSelected }) => {
               </CardHeader>
               <CardContent>
                 <p><strong>Ranking:</strong> {product.ranking}</p>
+                <div className="flex items-center mt-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-5 w-5 ${
+                        star <= Math.round(product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length)
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
                 <Button onClick={() => setIsFlipped(true)} className="mt-4">See More Details</Button>
               </CardContent>
             </Card>

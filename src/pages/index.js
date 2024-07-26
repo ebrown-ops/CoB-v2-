@@ -7,12 +7,22 @@ import FeaturedCategories from '@/components/FeaturedCategories';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { motion } from "framer-motion";
 import NewsletterSubscription from '@/components/NewsletterSubscription';
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from 'recharts';
 
 const recommendedProducts = [
   { id: 1, name: 'CRM Pro', category: 'Software', description: 'Top-rated CRM for small businesses', rating: 4.8 },
   { id: 2, name: 'QuickGrow Loan', category: 'Loans', description: 'Fast approval business loans', rating: 4.5 },
   { id: 3, name: 'HR Master', category: 'HR Solutions', description: 'Comprehensive HR management platform', rating: 4.7 },
 ];
+
+const productDistribution = [
+  { name: 'Software', value: 35 },
+  { name: 'Loans', value: 30 },
+  { name: 'Credit Cards', value: 20 },
+  { name: 'HR Solutions', value: 15 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function Home() {
   const router = useRouter();
@@ -64,12 +74,41 @@ export default function Home() {
             </div>
           </motion.section>
 
+          <motion.section 
+            className="mt-12 w-full max-w-4xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <h2 className="text-2xl font-semibold mb-4">Product Distribution</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={productDistribution}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {productDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.section>
+
           {recentlyViewed.length > 0 && (
             <motion.section 
               className="mt-12 w-full max-w-4xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
             >
               <h2 className="text-2xl font-semibold mb-4">Recently Viewed</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -96,7 +135,7 @@ export default function Home() {
             className="mt-12 w-full max-w-4xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
           >
             <h2 className="text-2xl font-semibold mb-4">Sponsored Solutions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -134,7 +173,7 @@ export default function Home() {
             className="mt-12 w-full max-w-4xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
+            transition={{ delay: 1, duration: 0.5 }}
           >
             <NewsletterSubscription />
           </motion.section>

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput, CommandList, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 
 const allProducts = [
   { id: 'sw1', name: 'CRM Pro', category: 'Software' },
@@ -25,14 +25,25 @@ export default function GlobalSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const results = allProducts.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        setIsLoading(true);
+        const results = allProducts.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setSearchResults(results);
+        setIsLoading(false);
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
   const handleResultClick = (result) => {
@@ -55,6 +66,8 @@ export default function GlobalSearch() {
     }
     router.push(url);
     setIsOpen(false);
+    // Log search analytics
+    console.log('Search clicked:', { term: searchTerm, result: result.name });
   };
 
   const handleSearch = (e) => {
@@ -62,6 +75,8 @@ export default function GlobalSearch() {
     if (searchTerm) {
       router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
       setIsOpen(false);
+      // Log search analytics
+      console.log('Search submitted:', { term: searchTerm });
     }
   };
 
@@ -83,16 +98,23 @@ export default function GlobalSearch() {
           <Command>
             <CommandInput placeholder="Search products..." value={searchTerm} onValueChange={setSearchTerm} />
             <CommandList>
-              {searchResults.map((result) => (
-                <CommandItem
-                  key={result.id}
-                  onSelect={() => handleResultClick(result)}
-                >
-                  <span>{result.name}</span>
-                  <span className="text-sm text-muted-foreground ml-2">{result.category}</span>
+              {isLoading ? (
+                <CommandItem>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Searching...
                 </CommandItem>
-              ))}
-              {searchResults.length === 0 && (
+              ) : (
+                searchResults.map((result) => (
+                  <CommandItem
+                    key={result.id}
+                    onSelect={() => handleResultClick(result)}
+                  >
+                    <span>{result.name}</span>
+                    <span className="text-sm text-muted-foreground ml-2">{result.category}</span>
+                  </CommandItem>
+                ))
+              )}
+              {searchResults.length === 0 && !isLoading && (
                 <CommandItem>No results found</CommandItem>
               )}
             </CommandList>

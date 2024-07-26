@@ -28,12 +28,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       // Implement your error logging logic here
     };
 
+    const logPageView = (url) => {
+      console.log('Page view:', url);
+      // Here you would typically send this data to your analytics service
+    };
+
     router.events.on('routeChangeStart', handleRouteChange);
     router.events.on('error', handleError);
+    router.events.on('routeChangeComplete', logPageView);
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChange);
       router.events.off('error', handleError);
+      router.events.off('routeChangeComplete', logPageView);
     };
   }, [router.events]);
 

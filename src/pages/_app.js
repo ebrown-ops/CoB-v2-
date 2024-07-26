@@ -7,6 +7,7 @@ import { ComparisonProvider } from '../context/ComparisonContext';
 import ComparisonTutorial from '../components/ComparisonTutorial';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 
 console.log('_app.js is being loaded');
 
@@ -25,6 +26,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
     const handleRouteChange = (url) => {
       console.log(`App is changing to ${url}`);
+      // Track page view
+      window.gtag('config', 'YOUR-ANALYTICS-ID', {
+        page_path: url,
+      });
     };
 
     const handleError = (error) => {
@@ -32,34 +37,45 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       // Implement your error logging logic here
     };
 
-    const logPageView = (url) => {
-      console.log('Page view:', url);
-      // Here you would typically send this data to your analytics service
-    };
-
     router.events.on('routeChangeStart', handleRouteChange);
     router.events.on('error', handleError);
-    router.events.on('routeChangeComplete', logPageView);
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChange);
       router.events.off('error', handleError);
-      router.events.off('routeChangeComplete', logPageView);
     };
   }, [router.events]);
 
   return (
-    <ErrorBoundary>
+    <>
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=YOUR-ANALYTICS-ID`}
+      />
+      <Script
+        id="gtag-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'YOUR-ANALYTICS-ID');
+          `,
+        }}
+      />
       <SessionProvider session={session}>
         <ThemeProvider attribute="class">
           <ComparisonProvider>
-            <Component {...pageProps} />
-            <Toaster />
-            <ComparisonTutorial />
+            <ErrorBoundary>
+              <Component {...pageProps} />
+              <Toaster />
+              <ComparisonTutorial />
+            </ErrorBoundary>
           </ComparisonProvider>
         </ThemeProvider>
       </SessionProvider>
-    </ErrorBoundary>
+    </>
   );
 }
 

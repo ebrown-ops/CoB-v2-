@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from "next-themes";
 import { ComparisonProvider } from '@/context/ComparisonContext';
+import ComparisonTutorial from '@/components/ComparisonTutorial';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -52,6 +53,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <ErrorBoundary>
             <Component {...pageProps} />
             <Toaster />
+            <ComparisonTutorial />
           </ErrorBoundary>
         </ComparisonProvider>
       </ThemeProvider>

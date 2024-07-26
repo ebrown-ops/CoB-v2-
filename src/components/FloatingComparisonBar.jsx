@@ -16,14 +16,14 @@ export default function FloatingComparisonBar({ selectedItems, onCompare, onClea
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           exit={{ y: 100 }}
-          className="fixed bottom-0 left-0 right-0 bg-primary text-primary-foreground p-4 shadow-lg"
+          className="fixed bottom-0 left-0 right-0 bg-primary text-primary-foreground p-4 shadow-lg z-50"
         >
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div>
-              <span className="font-bold">{selectedItems.length} items selected</span>
+              <span className="font-bold">{selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''} selected</span>
             </div>
             <div>
-              <Button onClick={onCompare} className="mr-2">Compare</Button>
+              <Button onClick={onCompare} className="mr-2" disabled={selectedItems.length < 2}>Compare</Button>
               <Button onClick={onClear} variant="secondary">Clear All</Button>
             </div>
           </div>

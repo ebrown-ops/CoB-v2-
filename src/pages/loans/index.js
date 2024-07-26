@@ -3,6 +3,10 @@ import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ComparisonTable from '@/components/ComparisonTable';
+import FloatingComparisonBar from '@/components/FloatingComparisonBar';
+import { useComparison } from '@/context/ComparisonContext';
+import { motion } from "framer-motion";
+import { toast } from "@/components/ui/use-toast";
 
 const loans = [
   { id: 1, name: 'Small Business Loan', description: 'General-purpose loans for businesses', interestRate: '6% - 12%', term: '1-5 years', maxAmount: '$500,000', minCreditScore: 650, timeToFund: '2-7 days' },
@@ -13,47 +17,97 @@ const loans = [
 ];
 
 export default function LoansPage() {
-  const [selectedLoans, setSelectedLoans] = useState([]);
+  const { selectedItems, addItem, removeItem, clearItems } = useComparison();
+  const [isComparing, setIsComparing] = useState(false);
 
   const toggleLoanSelection = (loan) => {
-    setSelectedLoans(prev => 
-      prev.find(l => l.id === loan.id)
-        ? prev.filter(l => l.id !== loan.id)
-        : [...prev, loan]
-    );
+    if (selectedItems.find(item => item.id === loan.id)) {
+      removeItem(loan.id);
+      toast({
+        title: "Removed from comparison",
+        description: `${loan.name} has been removed from the comparison.`,
+      });
+    } else {
+      if (selectedItems.length < 3) {
+        addItem(loan);
+        toast({
+          title: "Added to comparison",
+          description: `${loan.name} has been added to the comparison.`,
+        });
+      } else {
+        toast({
+          title: "Comparison limit reached",
+          description: "You can compare up to 3 items at a time.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleCompare = () => {
+    setIsComparing(true);
+  };
+
+  const handleClearAll = () => {
+    clearItems();
+    setIsComparing(false);
   };
 
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold mb-8">Business Loan Options</h1>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-3xl font-bold mb-8">Business Loan Options</h1>
+          <p className="mb-4">Select up to 3 loans to compare their features. Click the "Compare" button in the floating bar to see a detailed comparison.</p>
+        </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loans.map((loan) => (
-            <Card key={loan.id} className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle>{loan.name}</CardTitle>
-                <CardDescription>{loan.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p><strong>Interest Rate:</strong> {loan.interestRate}</p>
-                <p><strong>Term:</strong> {loan.term}</p>
-                <Button 
-                  className="mt-4"
-                  onClick={() => toggleLoanSelection(loan)}
-                  variant={selectedLoans.find(l => l.id === loan.id) ? "secondary" : "default"}
-                >
-                  {selectedLoans.find(l => l.id === loan.id) ? "Remove from Compare" : "Add to Compare"}
-                </Button>
-              </CardContent>
-            </Card>
+            <motion.div
+              key={loan.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle>{loan.name}</CardTitle>
+                  <CardDescription>{loan.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p><strong>Interest Rate:</strong> {loan.interestRate}</p>
+                  <p><strong>Term:</strong> {loan.term}</p>
+                  <Button 
+                    className="mt-4"
+                    onClick={() => toggleLoanSelection(loan)}
+                    variant={selectedItems.find(item => item.id === loan.id) ? "secondary" : "default"}
+                  >
+                    {selectedItems.find(item => item.id === loan.id) ? "Remove from Compare" : "Add to Compare"}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
-        {selectedLoans.length > 0 && (
-          <div className="mt-8">
+        {isComparing && selectedItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mt-8"
+          >
             <h2 className="text-2xl font-bold mb-4">Comparison</h2>
-            <ComparisonTable products={selectedLoans} />
-          </div>
+            <ComparisonTable products={selectedItems} />
+          </motion.div>
         )}
+        <FloatingComparisonBar
+          selectedItems={selectedItems}
+          onCompare={handleCompare}
+          onClear={handleClearAll}
+        />
       </div>
     </Layout>
   );
